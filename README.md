@@ -30,3 +30,6 @@ python Main.py
 - Unittests für Model & Controller
 - Exportfunktion der Analyse (PDF, Excel)
 - Anbindung an eine Wetter-API (OpenWeather, DWD)
+
+## Autor
+Diese Anwendung wurde während einer Abschlussprüfung in 6 Stunden erstellt.
