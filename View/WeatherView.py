@@ -1,4 +1,7 @@
 import tkinter as tk
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk, PhotoImage
 from tkcalendar import DateEntry
 
@@ -7,7 +10,7 @@ class WeatherView:
         self.root = root
         self.controller = controller
         self.root.title("Wetteranalyse")
-        self.root.geometry("900x500")
+        self.root.geometry("1000x500")
         self.icon = PhotoImage(file="Data/icon.png")
         self.root.iconphoto(False, self.icon)
 
@@ -22,32 +25,45 @@ class WeatherView:
         self.analysis_window = None
         self.stats_labels = None
         self.tree_analysis = None
+        self.plot_frame = None
+        self.canvas = None
+        self.paned_window = None
 
         self.create_gui()
 
-
     def create_gui(self):
         """
-        Erstellt das Hauptfenster(root) und zeigt die Daten der letzten Woche in einer Tabelle an
+        Erstellt das Hauptfenster (root) mit TreeView für Wetterdaten und einem Seaborn-Plot daneben.
         """
 
         # Überschrift
         self.label = tk.Label(self.root, text="Wetterdaten der letzten Woche", font=("Helvetica", 18, "bold"))
         self.label.pack(pady=10)
 
-        # Tabelle
-        self.tree = ttk.Treeview(self.root, columns=("Datum", "Temperatur (°C)", "Luftfeuchtigkeit (%)", "Luftdruck(hPa)"), show="headings")
+        # Horizontaler Container (PanedWindow) für Tabelle und Plot
+        self.paned_window = tk.PanedWindow(self.root, orient=tk.HORIZONTAL, sashrelief=tk.RAISED)
+        self.paned_window.pack(fill=tk.BOTH, expand=True)
+
+        # Frame für die Tabelle
+        tree_frame = tk.Frame(self.paned_window)
+        self.tree = ttk.Treeview(tree_frame,
+                                 columns=("Datum", "Temperatur (°C)", "Luftfeuchtigkeit (%)", "Luftdruck(hPa)"),
+                                 show="headings")
 
         for column in self.tree["columns"]:
             self.tree.heading(column, text=column)
             self.tree.column(column, width=120)
 
         self.tree.pack(pady=10, fill=tk.BOTH, expand=True)
+        self.paned_window.add(tree_frame)
 
-        # Button, der Analyse-Fenster öffnet
+        # Frame für den Plot
+        self.plot_frame = tk.Frame(self.paned_window)
+        self.paned_window.add(self.plot_frame)
+
+        # Button zum Öffnen der Analyse
         self.button_analysis = tk.Button(self.root, text="Analyse öffnen", command=self.controller.open_analysis_window)
         self.button_analysis.pack(pady=10)
-
 
     def show_data(self, data):
         """
@@ -166,5 +182,26 @@ class WeatherView:
                                                           row["Luftfeuchtigkeit"],
                                                           row["Luftdruck"]))
 
+
+    def draw_lineplot(self, data):
+        """
+        Erzeugt einen Line-Plot mit den Temperaturen der letzten Woche
+        :param data: die Wetterdaten
+        """
+        if self.canvas:
+            self.canvas.get_tk_widget().destroy()
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        sns.lineplot(data=data, x="Datum", y="Temperatur", ax=ax, color="tab:red")
+
+        ax.set_title("Temperatur der letzten Woche")
+        ax.set_ylabel("Temperatur (°C)")
+        ax.set_xlabel("Datum")
+        ax.tick_params(axis='x', rotation=45)
+        fig.tight_layout()
+
+        self.canvas = FigureCanvasTkAgg(fig, master=self.plot_frame)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
 

@@ -33,6 +33,7 @@ class WeatherController:
         recent_data = data[(data["Datum"] >= seven_days_back) & (data["Datum"] <= today)]
 
         self.view.show_data(recent_data)
+        self.view.draw_lineplot(recent_data)
 
 
     def open_analysis_window(self):
