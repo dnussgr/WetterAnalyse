@@ -24,11 +24,10 @@ pip install pandas tkcalendar
 ```bash
 python Main.py
 ```
-## Fortschritt
-- Diagramm-Visualisierung mit matplot und seaborn im Hauptfenster hinzugefügt
+## Fortschritt seit Kompetenzcheck
+- Diagramm-Visualisierung mit matplot und seaborn im Hauptfenster und Analysefenster hinzugefügt
 
 ## TODO / Ideen
-- Diagramm-Visualisierung für Analysefenster
 - Unittests für Model & Controller
 - Exportfunktion der Analyse (PDF, Excel)
 - Anbindung an eine Wetter-API (OpenWeather, DWD)
