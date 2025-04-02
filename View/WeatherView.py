@@ -3,6 +3,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk, PhotoImage
+
+from matplotlib.lines import lineStyles
 from tkcalendar import DateEntry
 
 class WeatherView:
@@ -28,6 +30,7 @@ class WeatherView:
         self.plot_frame = None
         self.canvas = None
         self.paned_window = None
+        self.plot_frame_analysis = None
 
         self.create_gui()
 
@@ -70,7 +73,6 @@ class WeatherView:
         Lädt die Daten für Datum, Temperatur, Luftfeuchtigkeit, Luftdruck
         :param data: die Liste mit den aus der csv-Datei geladenen Daten
         """
-
         # Vorhandene Reihen werden gelöscht
         for row in self.tree.get_children():
             self.tree.delete(row)
@@ -87,7 +89,6 @@ class WeatherView:
         Hier kann ein Anfangs- und Enddatum ausgewählt werden, auf dessen Grundlage dann Min/Max/Durchschnittswerte
         berechnet und die Daten für den gewählten Zeitraum angezeigt werden.
         """
-
         # Prüft, ob Fenster bereits existiert und hebt es hervor
         if self.analysis_window and self.analysis_window.winfo_exists():
             self.analysis_window.lift()
@@ -96,13 +97,17 @@ class WeatherView:
         # Fenstereigenschaften
         self.analysis_window = tk.Toplevel(self.root)
         self.analysis_window.title("Datenanalyse")
-        self.analysis_window.geometry("650x500")
+        self.analysis_window.geometry("1280x850")
         self.icon = PhotoImage(file="Data/icon.png")
         self.analysis_window.iconphoto(False, self.icon)
 
         # Grid-Container für Statistikwerte
         stats_frame = tk.Frame(self.analysis_window)
         stats_frame.pack(fill="x", padx=10, pady=5)
+
+        # Container für Plots
+        self.plot_frame_analysis = tk.Frame(self.analysis_window)
+        self.plot_frame_analysis.pack(side="right", fill="both", expand=True)
 
         # Überschriften für Statistik-Grid
         labels = ["", "Temperatur", "Luftfeuchtigkeit", "Luftdruck"]
@@ -166,6 +171,7 @@ class WeatherView:
                 ["Durchschnitt", result["Temperatur"]["Durchschnitt"], result["Luftfeuchtigkeit"]["Durchschnitt"],
                  result["Luftdruck"]["Durchschnitt"]],
             ]
+            self.draw_analysis_plots(all_filtered_values, result)
 
             for row_index, row_data in enumerate(statistics_values, start=1):
                 for col_index in range(1, 4):
@@ -205,3 +211,29 @@ class WeatherView:
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
 
+    def draw_analysis_plots(self, data, stats):
+
+        for widget in self.plot_frame_analysis.winfo_children():
+            widget.destroy()
+
+        metrics = ["Temperatur", "Luftfeuchtigkeit", "Luftdruck"]
+        colors = ["tab:red", "tab:blue", "tab:green"]
+
+        for i, (metric, color) in enumerate(zip(metrics, colors)):
+            fig, ax = plt.subplots(figsize=(5, 2.5))
+            sns.lineplot(data=data, x="Datum", y=metric, ax=ax, color=color)
+
+            # Statistiklinien (Min, Max, Durchschnitt)
+            ax.axhline(stats[metric]["Min"], color=color, linestyle="--", label="Min")
+            ax.axhline(stats[metric]["Max"], color=color, linestyle="--", label="Max")
+            ax.axhline(stats[metric]["Durchschnitt"], color=color, linestyle="-", label="Ø")
+
+            ax.set_title(f"{metric} im Zeitraum")
+            ax.set_xlabel("")
+            ax.tick_params(axis='x', rotation=45)
+            ax.legend(loc="center left", bbox_to_anchor=(1.0, 0.5))
+            fig.tight_layout()
+
+            canvas = FigureCanvasTkAgg(fig, master=self.plot_frame_analysis)
+            canvas.draw()
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True, pady=5)
