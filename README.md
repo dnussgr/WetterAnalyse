@@ -25,7 +25,7 @@ pip install pandas tkcalendar
 python Main.py
 ```
 ## Fortschritt
-- Diagramm-Visualisierung mit matplot und seaborn im Hauptfenster
+- Diagramm-Visualisierung mit matplot und seaborn im Hauptfenster hinzugefügt
 
 ## TODO / Ideen
 - Diagramm-Visualisierung für Analysefenster
