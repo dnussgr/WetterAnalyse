@@ -12,6 +12,10 @@ Sie ermöglicht eine visuelle Auswertung historischer Wetterdaten und bietet Sta
 - Asynchrone Datenverarbeitung (`asyncio`)
 - Struktur nach MVC-Prinzip
 
+## Screenshots
+![Hauptfenster](screenshots/Hauptfenster.png)
+![AnalyseFenster](screenshots/AnalyseFenster.png)
+
 ## Starten
 
 ### 1. Vorbereitungen
