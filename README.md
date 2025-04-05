@@ -22,7 +22,7 @@ Sie ermöglicht eine visuelle Auswertung historischer Wetterdaten und bietet Sta
 Python 3.10+ empfohlen. Abhängigkeiten installieren:
 
 ```bash
-pip install pandas tkcalendar
+pip install pandas tkcalendar seaborn matplotlib
 ```
 ### 2. Starten
 ```bash
