@@ -13,8 +13,8 @@ Sie ermöglicht eine visuelle Auswertung historischer Wetterdaten und bietet Sta
 - Struktur nach MVC-Prinzip
 
 ## Screenshots
-![Hauptfenster](screenshots/Hauptfenster.png)
-![AnalyseFenster](screenshots/AnalyseFenster.png)
+![Hauptfenster](screenshots/Hauptfenster.png?v=2)
+![AnalyseFenster](screenshots/AnalyseFenster.png?v=2)
 
 ## Starten
 
