@@ -1,6 +1,7 @@
 import tkinter as tk
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import ttk, PhotoImage
 
@@ -144,11 +145,11 @@ class WeatherView:
         date_frame.pack(fill="x", padx=10, pady=5)
 
         tk.Label(date_frame, text="Startdatum:").pack(side="left")
-        self.start_date = DateEntry(date_frame, width=12)
+        self.start_date = DateEntry(date_frame, width=12, locale="de_DE" , date_pattern="dd.mm.yyyy")
         self.start_date.pack(side="left", padx=5)
 
         tk.Label(date_frame, text="Enddatum:").pack(side="left")
-        self.end_date = DateEntry(date_frame, width=12)
+        self.end_date = DateEntry(date_frame, width=12, locale="de_DE", date_pattern="dd.mm.yyyy")
         self.end_date.pack(side="left", padx=5)
 
         # Analyse-Button
@@ -189,7 +190,7 @@ class WeatherView:
                                                           row["Luftdruck"]))
 
 
-    def draw_lineplot(self, data):
+    def draw_seven_days_lineplot(self, data):
         """
         Erzeugt einen Line-Plot mit den Temperaturen der letzten Woche
         :param data: die Wetterdaten
@@ -200,6 +201,7 @@ class WeatherView:
         fig, ax = plt.subplots(figsize=(6, 4))
         sns.lineplot(data=data, x="Datum", y="Temperatur", ax=ax, color="tab:red")
 
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m.%Y"))
         ax.set_title("Temperatur der letzten Woche")
         ax.set_ylabel("Temperatur (°C)")
         ax.set_xlabel("Datum")
@@ -228,6 +230,7 @@ class WeatherView:
             ax.axhline(stats[metric]["Max"], color=color, linestyle="--", label="Max")
             ax.axhline(stats[metric]["Durchschnitt"], color=color, linestyle="-", label="Ø")
 
+            ax.xaxis.set_major_formatter(mdates.DateFormatter("%d.%m.%Y"))
             ax.set_title(f"{metric} im Zeitraum")
             ax.set_xlabel("")
             ax.tick_params(axis='x', rotation=45)
