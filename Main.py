@@ -1,5 +1,5 @@
-from Controller.WeatherController import WeatherController
+from Controller.MainController import MainController
 
 if __name__ == "__main__":
-    app = WeatherController()
+    app = MainController()
     app.run()
